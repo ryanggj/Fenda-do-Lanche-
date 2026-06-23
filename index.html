@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fenda do Lanche - Hamburgueria Temática</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .bg-fenda { background-color: #0d2346; }
+        .text-fenda-yellow { color: #f4ca16; }
+        .bg-fenda-yellow { background-color: #f4ca16; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white font-sans pb-24">
+
+    <header class="bg-fenda border-b-4 border-yellow-500 sticky top-0 z-50 px-4 py-3 shadow-lg">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">🍍</span>
+                <h1 class="text-2xl font-black text-fenda-yellow tracking-wider">FENDA DO LANCHE</h1>
+            </div>
+            <button onclick="toggleCarrinho()" class="relative bg-fenda-yellow text-slate-950 px-4 py-2 rounded-full font-bold flex items-center gap-2 hover:bg-yellow-400 transition">
+                <i class="fas fa-shopping-basket"></i>
+                <span>Carrinho</span>
+                <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 mt-8">
+        
+        <section class="bg-fenda p-6 rounded-2xl border-2 border-yellow-500/30 mb-10 shadow-xl">
+            <h2 class="text-xl font-bold text-fenda-yellow mb-4 flex items-center gap-2">
+                <i class="fas fa-tools"></i> Monte seu Lanche do Fundo do Mar
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1 text-slate-300">Escolha o Pão:</label>
+                    <select id="custom-pao" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-yellow-500">
+                        <option value="Pão Brioche">Pão Brioche</option>
+                        <option value="Pão Rosa (Patrick)">Pão Rosa (Patrick)</option>
+                        <option value="Pão Preto (Plankton)">Pão Preto (Plankton)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1 text-slate-300">Escolha a Proteína:</label>
+                    <select id="custom-carne" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-yellow-500">
+                        <option value="Burger de Carne 120g">Burger de Carne 120g (+R$ 15,00)</option>
+                        <option value="Burger de Siri Legítimo">Burger de Siri Legítimo (+R$ 18,00)</option>
+                        <option value="Dois Smash Burgers">Dois Smash Burgers (+R$ 20,00)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1 text-slate-300">Queijo e Molho Extra:</label>
+                    <select id="custom-extra" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-yellow-500">
+                        <option value="Queijo Cheddar + Molho Secreto">Cheddar + Molho Secreto (+R$ 7,00)</option>
+                        <option value="Queijo Prato + Molho Tártaro">Queijo Prato + Molho Tártaro (+R$ 7,00)</option>
+                        <option value="Sem extras">Sem extras (+R$ 0,00)</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="adicionarLanchePersonalizado()" class="mt-4 w-full bg-emerald-600 text-white font-bold py-2.5 rounded-lg hover:bg-emerald-500 transition">
+                Adicionar Lanche Customizado ao Carrinho
+            </button>
+        </section>
+
+        <div id="cardapio" class="space-y-10">
+            </div>
+    </main>
+
+    <footer class="bg-slate-950 py-8 mt-12 text-center text-slate-400 border-t border-slate-800">
+        <p class="mb-2">Siga a gente na nossa rede oficial!</p>
+        <a href="https://instagram.com/fenda.do.lanche" target="_blank" class="inline-flex items-center gap-2 text-fenda-yellow font-bold text-lg hover:underline mb-4">
+            <i class="fab fa-instagram"></i> @fenda.do.lanche
+        </a>
+        <p class="text-xs">© 2026 Fenda do Lanche. Todos os direitos reservados do fundo do mar.</p>
+    </footer>
+
+    <div id="modal-carrinho" class="fixed inset-0 bg-black/70 z-50 flex justify-end hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 w-full max-w-md h-full p-6 flex flex-col justify-between shadow-2xl border-l border-slate-800">
+            <div>
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-fenda-yellow flex items-center gap-2">
+                        <i class="fas fa-shopping-cart"></i> Seu Pedido
+                    </h3>
+                    <button onclick="toggleCarrinho()" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+                </div>
+
+                <div id="cart-items" class="space-y-3 overflow-y-auto max-h-[40vh] pr-2">
+                    <p class="text-slate-400 text-center py-4">Seu carrinho está vazio com Gary...</p>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-4 space-y-3">
+                <div>
+                    <h4 class="font-bold text-sm text-slate-300 mb-2">Dados para Entrega:</h4>
+                    <input type="text" id="delivery-address" placeholder="Rua, Número e Bairro" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm text-white focus:outline-none mb-2">
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-sm text-slate-300 mb-1">Forma de Pagamento:</h4>
+                    <select id="payment-method" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm text-white focus:outline-none">
+                        <option value="Pix">Pix (Instantâneo)</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-between items-center text-lg font-bold text-white pt-2">
+                    <span>Total:</span>
+                    <span id="cart-total" class="text-fenda-yellow">R$ 0,00</span>
+                </div>
+
+                <button onclick="finalizarPedido()" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-lg hover:bg-emerald-500 transition mt-2 flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp"></i> Finalizar pelo WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Banco de dados dos produtos baseado nos menus fornecidos
+        const cardapioDados = {
+            "Combos do Fundo do Mar": [
+                { id: 1, nome: "Combo Fenda Suprema", preco: 44.90, desc: "2 smash burgers, cheddar, bacon, cebola caramelizada + Batata Frita + Refri lata." },
+                { id: 2, nome: "Combo Sirigueijo", preco: 41.90, desc: "Burger de siri (120g), queijo prato, alface, tomate e molho tártaro + Batata Frita + Refri lata." },
+                { id: 3, nome: "Combo Plankton", preco: 40.90, desc: "Pão preto, smash burger, cheddar, picles, cebola roxa e molho secreto + Batata Frita + Refri lata." }
+            ],
+            "Hamburgueres": [
+                { id: 4, nome: "Fenda Suprema (Avulso)", preco: 32.90, desc: "Pão brioche, 2 smash burgers, cheddar, bacon crocante, cebola caramelizada." },
+                { id: 5, nome: "Sirigueijo (Avulso)", preco: 29.90, desc: "Pão brioche, burger de siri (120g), queijo prato, alface, tomate." },
+                { id: 6, nome: "Patrick Star", preco: 31.90, desc: "Pão brioche rosa, burger 180g, cheddar, onion rings, bacon e molho rosée." },
+                { id: 7, nome: "Bob Esponja", preco: 24.90, desc: "Pão brioche, burger 120g, queijo cheddar, alface, tomate e maionese caseira." }
+            ],
+            "Acompanhamentos": [
+                { id: 8, nome: "Batata Frita Tradicional", preco: 12.90, desc: "Crocantes por fora e macias por dentro." },
+                { id: 9, nome: "Batata Frita Cheddar e Bacon", preco: 18.90, desc: "Porção generosa coberta com cheddar derretido e bacon." },
+                { id: 10, nome: "Bolinho de Siri (6 unid.)", preco: 16.90, desc: "Receita secreta crocante e sequinha." }
+            ],
+            "Bebidas & Sobremesas": [
+                { id: 11, nome: "Refrigerante Lata", preco: 7.00, desc: "Coca-Cola, Guaraná ou Fanta" },
+                { id: 12, nome: "Milk Shake Fenda", preco: 16.90, desc: "Sabores: Cookies, Chocolate ou Baunilha" },
+                { id: 13, nome: "Bolo de Abacaxi (Casa da Dona)", preco: 13.90, desc: "Deliciosa fatia temática molhadinha." }
+            ]
+        };
+
+        let carrinho = [];
+
+        // Renderiza o cardápio na tela
+        function renderizarCardapio() {
+            const container = document.getElementById('cardapio');
+            container.innerHTML = '';
+
+            for (const [categoria, produtos] of Object.entries(cardapioDados)) {
+                let htmlSection = `
+                    <div>
+                        <h3 class="text-xl font-black border-b-2 border-yellow-500/30 pb-2 mb-4 text-fenda-yellow tracking-wide uppercase">${categoria}</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                `;
+
+                produtos.forEach(p => {
+                    htmlSection += `
+                        <div class="bg-slate-800/60 border border-slate-700/50 p-4 rounded-xl flex justify-between items-center hover:border-slate-600 transition">
+                            <div class="pr-2">
+                                <h4 class="font-bold text-white text-base">${p.nome}</h4>
+                                <p class="text-xs text-slate-400 mt-1">${p.desc}</p>
+                                <span class="text-fenda-yellow font-bold text-sm block mt-2">R$ ${p.preco.toFixed(2)}</span>
+                            </div>
+                            <button onclick="adicionarAoCarrinho(${p.id}, '${p.nome}', ${p.preco})" class="bg-yellow-500 text-slate-950 font-bold p-2.5 rounded-lg hover:bg-yellow-400 transition flex items-center justify-center">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+
+                htmlSection += `</div></div>`;
+                container.innerHTML += htmlSection;
+            }
+        }
+
+        // Adiciona item padrão ao carrinho
+        function adicionarAoCarrinho(id, nome, preco) {
+            const itemExistente = carrinho.find(item => item.id === id);
+            if (itemExistente) {
+                itemExistente.qtd++;
+            } else {
+                carrinho.push({ id, nome, preco, qtd: 1 });
+            }
+            atualizarInterfaceCarrinho();
+        }
+
+        // Adiciona o lanche customizado montado pelo usuário
+        function adicionarLanchePersonalizado() {
+            const pao = document.getElementById('custom-pao').value;
+            const carne = document.getElementById('custom-carne').value;
+            const extra = document.getElementById('custom-extra').value;
+
+            // Define valores adicionais aproximados
+            let precoBase = 10.00; 
+            if(carne.includes("Siri")) precoBase += 18.00;
+            else if(carne.includes("Dois")) precoBase += 20.00;
+            else precoBase += 15.00;
+
+            if(!extra.includes("Sem")) precoBase += 7.00;
+
+            const nomeCustom = `Custom: ${pao} + ${carne.split(' (+')[0]}`;
+            const idCustom = Date.now(); // ID único temporário
+
+            carrinho.push({ id: idCustom, nome: nomeCustom, preco: precoBase, qtd: 1 });
+            atualizarInterfaceCarrinho();
+            
+            // Abre o carrinho para o usuário ver
+            toggleCarrinho(true);
+        }
+
+        // Altera a quantidade no carrinho
+        function mudarQtd(id, delta) {
+            const item = carrinho.find(i => i.id === id);
+            if (item) {
+                item.qtd += delta;
+                if (item.qtd <= 0) {
+                    carrinho = carrinho.filter(i => i.id !== id);
+                }
+            }
+            atualizarInterfaceCarrinho();
+        }
+
+        // Atualiza os valores visuais do carrinho
+        function atualizarInterfaceCarrinho() {
+            const containerItems = document.getElementById('cart-items');
+            const totalBadge = document.getElementById('cart-badge');
+            const totalText = document.getElementById('cart-total');
+
+            if (carrinho.length === 0) {
+                containerItems.innerHTML = '<p class="text-slate-400 text-center py-4">Seu carrinho está vazio...</p>';
+                totalBadge.classList.add('hidden');
+                totalText.innerText = 'R$ 0,00';
+                return;
+            }
+
+            containerItems.innerHTML = '';
+            let totalGeral = 0;
+            let qtdItensTotal = 0;
+
+            carrinho.forEach(item => {
+                const subtotal = item.preco * item.qtd;
+                totalGeral += subtotal;
+                qtdItensTotal += item.qtd;
+
+                containerItems.innerHTML += `
+                    <div class="bg-slate-800 p-3 rounded-lg flex justify-between items-center border border-slate-700">
+                        <div class="max-w-[60%]">
+                            <h5 class="font-bold text-sm truncate text-white">${item.nome}</h5>
+                            <span class="text-xs text-fenda-yellow">R$ ${item.preco.toFixed(2)}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="mudarQtd(${item.id}, -1)" class="bg-slate-700 text-white w-7 h-7 rounded hover:bg-slate-600 font-bold text-sm">-</button>
+                            <span class="text-sm font-bold w-4 text-center">${item.qtd}</span>
+                            <button onclick="mudarQtd(${item.id}, 1)" class="bg-slate-700 text-white w-7 h-7 rounded hover:bg-slate-600 font-bold text-sm">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            totalText.innerText = `R$ ${totalGeral.toFixed(2)}`;
+            totalBadge.innerText = qtdItensTotal;
+            totalBadge.classList.remove('hidden');
+        }
+
+        // Controla abertura/fechamento do Modal lateral do carrinho
+        function toggleCarrinho(forcarAbrir = false) {
+            const modal = document.getElementById('modal-carrinho');
+            if (modal.classList.contains('hidden') || forcarAbrir) {
+                modal.classList.remove('hidden');
+                setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            } else {
+                modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        // Finaliza o fluxo montando a string de texto para entrega
+        function finalizarPedido() {
+            if(carrinho.length === 0) {
+                alert("Seu carrinho está vazio!");
+                return;
+            }
+
+            const endereco = document.getElementById('delivery-address').value.trim();
+            const pagamento = document.getElementById('payment-method').value;
+
+            if(!endereco) {
+                alert("Por favor, preencha o seu endereço para entrega!");
+                document.getElementById('delivery-address').focus();
+                return;
+            }
+
+            // Montagem do texto do pedido
+            let textoPedido = `*🍔 NOVO PEDIDO - FENDA DO LANCHE 🍍*\n\n`;
+            let totalGeral = 0;
+
+            carrinho.forEach(item => {
+                textoPedido += `${item.qtd}x _${item.nome}_ - R$ ${(item.preco * item.qtd).toFixed(2)}\n`;
+                totalGeral += (item.preco * item.qtd);
+            });
+
+            textoPedido += `\n*Total Geral:* R$ ${totalGeral.toFixed(2)}`;
+            textoPedido += `\n*Forma de Pagamento:* ${pagamento}`;
+            textoPedido += `\n*Endereço de Entrega:* ${endereco}`;
+
+            // Codifica a string URI e redireciona para um WhatsApp fictício ou de sua operação
+            const numeroWhats = "5500999999999"; // Substitua pelo seu número comercial real
+            const urlFinal = `https://api.whatsapp.com/send?phone=${numeroWhats}&text=${encodeURIComponent(textoPedido)}`;
+            
+            window.open(urlFinal, '_blank');
+        }
+
+        // Inicializa o script renderizando os itens da tela
+        window.onload = renderizarCardapio;
+    </script>
+</body>
+</html>
